@@ -1,0 +1,56 @@
+# === Python ===
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# === Virtual environments ===
+.venv/
+venv/
+env/
+ENV/
+
+# === Environment variables ===
+.env
+.env.*
+!.env.example
+
+# === Testing / coverage ===
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+
+# === Linting / type checking ===
+.ruff_cache/
+.mypy_cache/
+.dmypy.json
+
+# === IDE ===
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# === OS ===
+.DS_Store
+Thumbs.db
+
+# === Logs ===
+*.log
+logs/
+
+# === Docker ===
+postgres_data/
+redis_data/
+
+# === Alembic (локальные артефакты) ===
+alembic/versions/__pycache__/
