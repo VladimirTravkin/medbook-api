@@ -11,13 +11,15 @@ from app.api.v1.router import api_router
 from app.core.config import settings
 from app.core.exceptions import register_exception_handlers
 from app.core.redis import close_redis_client, get_redis_client
+from app.core.rate_limit import RateLimitMiddleware, configure_rate_limits
 
 
 @asynccontextmanager
 async def lifespan(_: FastAPI) -> AsyncGenerator[None, None]:
     """Application lifespan: warm up Redis on startup, close on shutdown."""
-    # Startup: initialise Redis client eagerly
+    # Startup: initialise Redis client eagerly and load rate limits
     get_redis_client()
+    configure_rate_limits()
     yield
     # Shutdown: close Redis connection
     await close_redis_client()
@@ -43,6 +45,9 @@ def create_app() -> FastAPI:
         allow_methods=["*"],
         allow_headers=["*"],
     )
+
+    # === Rate limiting ===
+    app.add_middleware(RateLimitMiddleware)
 
     # === Exception handlers ===
     register_exception_handlers(app)
