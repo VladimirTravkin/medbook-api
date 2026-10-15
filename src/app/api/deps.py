@@ -5,11 +5,10 @@ from collections.abc import Callable
 from typing import Annotated
 
 from fastapi import Depends
-from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from jose import JWTError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.config import settings
 from app.core.exceptions import ForbiddenError, UnauthorizedError
 from app.core.security import decode_token
 from app.db.session import get_db
@@ -17,8 +16,9 @@ from app.models.user import User, UserRole
 from app.repositories.user import UserRepository
 from app.services.auth import AuthService
 
-# OAuth2 scheme for Swagger "Authorize" button
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"{settings.API_V1_PREFIX}/auth/login")
+# HTTP Bearer scheme for Swagger "Authorize" button.
+# The client pastes a ready access token; no login form is shown.
+http_bearer = HTTPBearer(auto_error=False)
 
 
 # ============================================
@@ -40,10 +40,14 @@ AuthServiceDep = Annotated[AuthService, Depends(get_auth_service)]
 
 
 async def get_current_user(
-    token: Annotated[str, Depends(oauth2_scheme)],
+    credentials: Annotated[HTTPAuthorizationCredentials | None, Depends(http_bearer)],
     db: Annotated[AsyncSession, Depends(get_db)],
 ) -> User:
     """Decode the access token and return the corresponding active user."""
+    if credentials is None:
+        raise UnauthorizedError("Требуется авторизация")
+
+    token = credentials.credentials
     try:
         payload = decode_token(token)
     except JWTError as exc:
