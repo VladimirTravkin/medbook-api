@@ -8,9 +8,9 @@ from starlette.responses import Response
 from app.core.config import settings
 from app.core.redis import get_redis_client
 
-# Routes subject to rate limiting: {path_prefix: "limit/period_in_seconds"}
-# Values are parsed from settings.RATE_LIMIT_AUTH on startup.
-_RATE_LIMITED_PREFIXES: dict[str, tuple[int, int]] = {}
+# Rate limit rules: list of (method_or_None, path_prefix, (limit, period)).
+# method=None means "any method"; a specific method restricts the rule.
+_RATE_LIMIT_RULES: list[tuple[str | None, str, tuple[int, int]]] = []
 
 
 def _parse_rate(spec: str) -> tuple[int, int]:
@@ -21,12 +21,15 @@ def _parse_rate(spec: str) -> tuple[int, int]:
 
 def configure_rate_limits() -> None:
     """Populate rate limit rules from settings. Called once at startup."""
-    _RATE_LIMITED_PREFIXES.clear()
+    _RATE_LIMIT_RULES.clear()
+
     auth_limit, auth_period = _parse_rate(settings.RATE_LIMIT_AUTH)
-    _RATE_LIMITED_PREFIXES[f"{settings.API_V1_PREFIX}/auth/"] = (auth_limit, auth_period)
-    # Future: appointments POST — add when endpoint exists
-    # appt_limit, appt_period = _parse_rate(settings.RATE_LIMIT_APPOINTMENTS)
-    # _RATE_LIMITED_PREFIXES[f"{settings.API_V1_PREFIX}/appointments"] = (appt_limit, appt_period)
+    _RATE_LIMIT_RULES.append((None, f"{settings.API_V1_PREFIX}/auth/", (auth_limit, auth_period)))
+
+    appt_limit, appt_period = _parse_rate(settings.RATE_LIMIT_APPOINTMENTS)
+    _RATE_LIMIT_RULES.append(
+        ("POST", f"{settings.API_V1_PREFIX}/appointments", (appt_limit, appt_period))
+    )
 
 
 def _get_client_ip(request: Request) -> str:
@@ -39,9 +42,11 @@ def _get_client_ip(request: Request) -> str:
     return "unknown"
 
 
-def _match_rule(path: str) -> tuple[int, int] | None:
-    """Return (limit, period) for the first matching prefix, or None."""
-    for prefix, rule in _RATE_LIMITED_PREFIXES.items():
+def _match_rule(method: str, path: str) -> tuple[int, int] | None:
+    """Return (limit, period) for the first matching rule, or None."""
+    for rule_method, prefix, rule in _RATE_LIMIT_RULES:
+        if rule_method is not None and rule_method != method:
+            continue
         if path.startswith(prefix):
             return rule
     return None
@@ -59,7 +64,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         request: Request,
         call_next: RequestResponseEndpoint,
     ) -> Response:
-        rule = _match_rule(request.url.path)
+        rule = _match_rule(request.method, request.url.path)
         if rule is None:
             return await call_next(request)
 
