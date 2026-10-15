@@ -32,7 +32,7 @@ ServiceDep = Annotated[SpecializationService, Depends(get_service)]
 @router.get(
     "",
     response_model=list[SpecializationRead],
-    summary="List specializations",
+    summary="Список специализаций",
     description="Публичный список всех специализаций.",
 )
 async def list_specializations(service: ServiceDep) -> list[SpecializationRead]:
@@ -44,7 +44,7 @@ async def list_specializations(service: ServiceDep) -> list[SpecializationRead]:
 @router.get(
     "/{specialization_id}",
     response_model=SpecializationRead,
-    summary="Get specialization",
+    summary="Специализация по ID",
     description="Информация о специализации по её идентификатору.",
 )
 async def get_specialization(
@@ -60,7 +60,7 @@ async def get_specialization(
     "",
     response_model=SpecializationRead,
     status_code=status.HTTP_201_CREATED,
-    summary="Create specialization",
+    summary="Создать специализацию",
     description="Создать новую специализацию. Доступно только администратору.",
 )
 async def create_specialization(
@@ -76,7 +76,7 @@ async def create_specialization(
 @router.patch(
     "/{specialization_id}",
     response_model=SpecializationRead,
-    summary="Update specialization",
+    summary="Обновить специализацию",
     description="Обновить специализацию. Доступно только администратору.",
 )
 async def update_specialization(
@@ -93,7 +93,7 @@ async def update_specialization(
 @router.delete(
     "/{specialization_id}",
     status_code=status.HTTP_204_NO_CONTENT,
-    summary="Delete specialization",
+    summary="Удалить специализацию",
     description="Удалить специализацию. Нельзя, если к ней привязаны врачи. Только администратор.",
 )
 async def delete_specialization(

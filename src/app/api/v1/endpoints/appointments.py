@@ -40,7 +40,7 @@ ServiceDep = Annotated[AppointmentService, Depends(get_service)]
     "",
     response_model=AppointmentRead,
     status_code=status.HTTP_201_CREATED,
-    summary="Book appointment",
+    summary="Записаться на приём",
     description=(
         "Записаться на приём к врачу. Доступно только пациенту. "
         "Проверяются: прошедшее время, занятость слота, пересечения у пациента, "
@@ -65,10 +65,11 @@ async def create_appointment(
 @router.get(
     "",
     response_model=Page[AppointmentDetail],
-    summary="List my appointments",
+    summary="Записи на приём",
     description=(
-        "Список записей, зависящий от роли: "
-        "пациент видит свои, врач — свои приёмы, администратор — все."
+        "Список записей на приём в зависимости от роли: "
+        "пациент видит свои записи, врач — приёмы к себе, "
+        "администратор — все записи."
     ),
 )
 async def list_my_appointments(
@@ -101,7 +102,7 @@ async def list_my_appointments(
 @router.get(
     "/{appointment_id}",
     response_model=AppointmentDetail,
-    summary="Get appointment",
+    summary="Запись по ID",
     description="Детали записи. Доступно пациенту (своя), врачу (свой приём) и администратору.",
 )
 async def get_appointment(
@@ -122,7 +123,7 @@ async def get_appointment(
 @router.patch(
     "/{appointment_id}/status",
     response_model=AppointmentDetail,
-    summary="Update appointment status",
+    summary="Изменить статус записи",
     description="Изменить статус записи. Доступно врачу (свой приём) или администратору.",
 )
 async def update_appointment_status(
@@ -144,7 +145,7 @@ async def update_appointment_status(
 @router.post(
     "/{appointment_id}/cancel",
     response_model=AppointmentDetail,
-    summary="Cancel appointment",
+    summary="Отменить запись",
     description=(
         "Отменить запись. Пациент может отменить только свою запись и не позднее "
         "чем за N часов до приёма. Врач и администратор — без ограничений."

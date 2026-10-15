@@ -29,7 +29,7 @@ ServiceDep = Annotated[DoctorService, Depends(get_service)]
 @router.get(
     "",
     response_model=Page[DoctorShort],
-    summary="List doctors",
+    summary="Список врачей",
     description="Публичный список врачей с пагинацией и фильтром по специализации.",
 )
 async def list_doctors(
@@ -51,7 +51,7 @@ async def list_doctors(
 @router.get(
     "/{doctor_id}",
     response_model=DoctorRead,
-    summary="Get doctor",
+    summary="Врач по ID",
     description="Подробная информация о враче по его идентификатору.",
 )
 async def get_doctor(doctor_id: uuid.UUID, service: ServiceDep) -> DoctorRead:
@@ -64,7 +64,7 @@ async def get_doctor(doctor_id: uuid.UUID, service: ServiceDep) -> DoctorRead:
     "",
     response_model=DoctorRead,
     status_code=status.HTTP_201_CREATED,
-    summary="Create doctor",
+    summary="Создать врача",
     description="Создать нового врача (учётную запись и профиль). Только администратор.",
 )
 async def create_doctor(
@@ -80,7 +80,7 @@ async def create_doctor(
 @router.patch(
     "/{doctor_id}",
     response_model=DoctorRead,
-    summary="Update doctor",
+    summary="Обновить врача",
     description="Обновить профиль врача. Доступно администратору или самому врачу.",
 )
 async def update_doctor(
@@ -97,7 +97,7 @@ async def update_doctor(
 @router.delete(
     "/{doctor_id}",
     status_code=status.HTTP_204_NO_CONTENT,
-    summary="Delete doctor",
+    summary="Удалить врача",
     description="Удалить врача (вместе с учётной записью). Только администратор.",
 )
 async def delete_doctor(

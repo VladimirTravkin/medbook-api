@@ -13,7 +13,7 @@ router = APIRouter(tags=["health"])
 
 @router.get(
     "/health",
-    summary="Health check",
+    summary="Проверка работоспособности",
     description="Проверка доступности API, базы данных и Redis.",
 )
 async def health_check(db: AsyncSession = Depends(get_db)) -> JSONResponse:
