@@ -132,8 +132,25 @@ async def test_user(db_session: AsyncSession) -> User:
 
 
 @pytest.fixture
+async def test_admin(db_session: AsyncSession) -> User:
+    """Create a test admin user."""
+    from app.core.security import hash_password
+
+    user = User(
+        email="admin@test.com",
+        password_hash=hash_password("adminpassword123"),
+        full_name="Test Admin",
+        role=UserRole.ADMIN,
+        is_active=True,
+    )
+    db_session.add(user)
+    await db_session.flush()
+    return user
+
+
+@pytest.fixture
 async def auth_headers(client: AsyncClient, test_user: User) -> dict[str, str]:
-    """Log in as the test user and return Authorization headers."""
+    """Log in as the test patient and return Authorization headers."""
     response = await client.post(
         "/api/v1/auth/login",
         json={"email": "test@example.com", "password": "testpassword123"},
@@ -141,3 +158,29 @@ async def auth_headers(client: AsyncClient, test_user: User) -> dict[str, str]:
     assert response.status_code == 200, response.text
     token = response.json()["access_token"]
     return {"Authorization": f"Bearer {token}"}
+
+
+@pytest.fixture
+async def admin_headers(client: AsyncClient, test_admin: User) -> dict[str, str]:
+    """Log in as the test admin and return Authorization headers."""
+    response = await client.post(
+        "/api/v1/auth/login",
+        json={"email": "admin@test.com", "password": "adminpassword123"},
+    )
+    assert response.status_code == 200, response.text
+    token = response.json()["access_token"]
+    return {"Authorization": f"Bearer {token}"}
+
+
+@pytest.fixture
+async def test_specialization(db_session: AsyncSession):
+    """Create a test specialization."""
+    from app.models.specialization import Specialization
+
+    spec = Specialization(
+        name="Терапевт",
+        description="Врач общей практики",
+    )
+    db_session.add(spec)
+    await db_session.flush()
+    return spec
