@@ -106,7 +106,7 @@ class DoctorService:
     # Write
     # ============================================
 
-    async def create_doctor(self, data: DoctorCreate) -> Doctor:
+    async def create_doctor(self, data: DoctorCreate) -> dict:
         """Create a User with role=doctor and a linked Doctor profile."""
         email = data.email.lower()
         if await self.users.email_exists(email):
@@ -135,13 +135,13 @@ class DoctorService:
         await self._invalidate_cache()
         created = await self.doctors.get_with_relations(doctor.id)
         assert created is not None  # just created
-        return created
+        return self._serialize_doctor(created)
 
     async def update_doctor(
         self,
         doctor_id: uuid.UUID,
         data: DoctorUpdate,
-    ) -> Doctor:
+    ) -> dict:
         """Update a doctor profile."""
         doctor = await self.get_doctor_model(doctor_id)
         updates = data.model_dump(exclude_unset=True)
@@ -161,7 +161,7 @@ class DoctorService:
         await self._invalidate_cache(doctor_id)
         updated = await self.doctors.get_with_relations(doctor_id)
         assert updated is not None  # just updated
-        return updated
+        return self._serialize_doctor(updated)
 
     async def delete_doctor(self, doctor_id: uuid.UUID) -> None:
         """Delete a doctor profile (and linked user via cascade)."""
