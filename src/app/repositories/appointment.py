@@ -7,6 +7,7 @@ from sqlalchemy import and_, func, select
 from sqlalchemy.orm import joinedload
 
 from app.models.appointment import Appointment, AppointmentStatus
+from app.models.doctor import Doctor
 from app.models.schedule_slot import ScheduleSlot
 from app.repositories.base import BaseRepository
 
@@ -25,7 +26,7 @@ class AppointmentRepository(BaseRepository[Appointment]):
             .options(
                 joinedload(Appointment.slot),
                 joinedload(Appointment.patient),
-                joinedload(Appointment.doctor).joinedload("user"),  # type: ignore[arg-type]
+                joinedload(Appointment.doctor).joinedload(Doctor.user),
             )
             .where(Appointment.id == appointment_id)
             .limit(1)
