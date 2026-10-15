@@ -2,7 +2,7 @@
 
 import uuid
 
-from sqlalchemy import ForeignKey, Integer, Text
+from sqlalchemy import ForeignKey, Integer, String, Text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -38,6 +38,10 @@ class Doctor(Base, TimestampMixin):
     )
     experience_years: Mapped[int | None] = mapped_column(
         Integer,
+        nullable=True,
+    )
+    avatar_url: Mapped[str | None] = mapped_column(
+        String(500),
         nullable=True,
     )
 
