@@ -184,3 +184,94 @@ async def test_specialization(db_session: AsyncSession):
     db_session.add(spec)
     await db_session.flush()
     return spec
+
+
+@pytest.fixture
+async def test_doctor(db_session: AsyncSession, test_specialization):
+    """Create a test doctor: User (role=doctor) + Doctor profile."""
+    from app.core.security import hash_password
+    from app.models.doctor import Doctor
+
+    user = User(
+        email="doctor@test.com",
+        password_hash=hash_password("doctorpassword123"),
+        full_name="Доктор Тестов",
+        role=UserRole.DOCTOR,
+        is_active=True,
+    )
+    db_session.add(user)
+    await db_session.flush()
+
+    doctor = Doctor(
+        user_id=user.id,
+        specialization_id=test_specialization.id,
+        bio="Опытный специалист",
+        experience_years=10,
+    )
+    db_session.add(doctor)
+    await db_session.flush()
+    return doctor
+
+
+@pytest.fixture
+async def doctor_headers(client: AsyncClient, test_doctor) -> dict[str, str]:
+    """Log in as the test doctor and return Authorization headers."""
+    response = await client.post(
+        "/api/v1/auth/login",
+        json={"email": "doctor@test.com", "password": "doctorpassword123"},
+    )
+    assert response.status_code == 200, response.text
+    token = response.json()["access_token"]
+    return {"Authorization": f"Bearer {token}"}
+
+
+@pytest.fixture
+async def future_slot(db_session: AsyncSession, test_doctor):
+    """Create a free slot in the future (2 days from now)."""
+    from datetime import UTC, datetime, timedelta
+
+    from app.models.schedule_slot import ScheduleSlot
+
+    start = datetime.now(UTC).replace(second=0, microsecond=0) + timedelta(days=2)
+    end = start + timedelta(minutes=30)
+
+    slot = ScheduleSlot(
+        doctor_id=test_doctor.id,
+        start_time=start,
+        end_time=end,
+        is_booked=False,
+    )
+    db_session.add(slot)
+    await db_session.flush()
+    return slot
+
+
+@pytest.fixture
+async def booked_slot(db_session: AsyncSession, test_doctor, test_user):
+    """Create a slot already booked by test_user."""
+    from datetime import UTC, datetime, timedelta
+
+    from app.models.appointment import Appointment, AppointmentStatus
+    from app.models.schedule_slot import ScheduleSlot
+
+    start = datetime.now(UTC).replace(second=0, microsecond=0) + timedelta(days=3)
+    end = start + timedelta(minutes=30)
+
+    slot = ScheduleSlot(
+        doctor_id=test_doctor.id,
+        start_time=start,
+        end_time=end,
+        is_booked=True,
+    )
+    db_session.add(slot)
+    await db_session.flush()
+
+    appointment = Appointment(
+        patient_id=test_user.id,
+        doctor_id=test_doctor.id,
+        slot_id=slot.id,
+        status=AppointmentStatus.PENDING,
+    )
+    db_session.add(appointment)
+    await db_session.flush()
+    return slot
