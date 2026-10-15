@@ -3,7 +3,8 @@
 import enum
 import uuid
 
-from sqlalchemy import Enum as SAEnum, ForeignKey, Index, Text
+from sqlalchemy import Enum as SAEnum
+from sqlalchemy import ForeignKey, Index, Text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -80,7 +81,4 @@ class Appointment(Base, TimestampMixin):
     )
 
     def __repr__(self) -> str:
-        return (
-            f"<Appointment id={self.id} patient_id={self.patient_id} "
-            f"status={self.status.value}>"
-        )
+        return f"<Appointment id={self.id} patient_id={self.patient_id} status={self.status.value}>"
