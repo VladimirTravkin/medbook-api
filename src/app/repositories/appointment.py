@@ -90,7 +90,11 @@ class AppointmentRepository(BaseRepository[Appointment]):
         """List patient's appointments with slot loaded."""
         stmt = (
             select(Appointment)
-            .options(joinedload(Appointment.slot))
+            .options(
+                joinedload(Appointment.slot),
+                joinedload(Appointment.patient),
+                joinedload(Appointment.doctor).joinedload(Doctor.user),
+            )
             .where(Appointment.patient_id == patient_id)
         )
         if status is not None:
@@ -135,6 +139,7 @@ class AppointmentRepository(BaseRepository[Appointment]):
             .options(
                 joinedload(Appointment.slot),
                 joinedload(Appointment.patient),
+                joinedload(Appointment.doctor).joinedload(Doctor.user),
             )
             .where(Appointment.doctor_id == doctor_id)
         )
@@ -175,6 +180,7 @@ class AppointmentRepository(BaseRepository[Appointment]):
         stmt = select(Appointment).options(
             joinedload(Appointment.slot),
             joinedload(Appointment.patient),
+            joinedload(Appointment.doctor).joinedload(Doctor.user),
         )
         if status is not None:
             stmt = stmt.where(Appointment.status == status)
