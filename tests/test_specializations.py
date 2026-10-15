@@ -4,7 +4,6 @@ from httpx import AsyncClient
 
 from app.models.user import User
 
-
 # ============================================
 # Read (public)
 # ============================================
@@ -17,9 +16,7 @@ async def test_list_specializations_empty(client: AsyncClient) -> None:
     assert response.json() == []
 
 
-async def test_list_specializations(
-    client: AsyncClient, test_specialization
-) -> None:
+async def test_list_specializations(client: AsyncClient, test_specialization) -> None:
     """Catalog returns the created specialization."""
     response = await client.get("/api/v1/specializations")
     assert response.status_code == 200
@@ -28,9 +25,7 @@ async def test_list_specializations(
     assert data[0]["name"] == "Терапевт"
 
 
-async def test_get_specialization(
-    client: AsyncClient, test_specialization
-) -> None:
+async def test_get_specialization(client: AsyncClient, test_specialization) -> None:
     """Get a single specialization by id."""
     response = await client.get(f"/api/v1/specializations/{test_specialization.id}")
     assert response.status_code == 200
@@ -39,9 +34,7 @@ async def test_get_specialization(
 
 async def test_get_specialization_not_found(client: AsyncClient) -> None:
     """Unknown id returns 404."""
-    response = await client.get(
-        "/api/v1/specializations/00000000-0000-0000-0000-000000000000"
-    )
+    response = await client.get("/api/v1/specializations/00000000-0000-0000-0000-000000000000")
     assert response.status_code == 404
     assert response.json()["error"]["code"] == "NOT_FOUND"
 
