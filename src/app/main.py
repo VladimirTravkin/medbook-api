@@ -10,8 +10,8 @@ from app.api.v1.endpoints import health
 from app.api.v1.router import api_router
 from app.core.config import settings
 from app.core.exceptions import register_exception_handlers
-from app.core.redis import close_redis_client, get_redis_client
 from app.core.rate_limit import RateLimitMiddleware, configure_rate_limits
+from app.core.redis import close_redis_client, get_redis_client
 
 
 @asynccontextmanager

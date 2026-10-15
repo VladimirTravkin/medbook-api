@@ -1,7 +1,6 @@
 """Pytest fixtures for the test suite."""
 
 import asyncio
-import os
 from collections.abc import AsyncGenerator, Generator
 
 import fakeredis.aioredis
@@ -11,7 +10,6 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_asyn
 from sqlalchemy.pool import NullPool
 
 from app.core.config import settings
-from app.core.redis import get_redis_client
 from app.db.base import Base
 from app.db.session import get_db
 from app.main import app as fastapi_app

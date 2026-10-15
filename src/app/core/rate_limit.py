@@ -1,7 +1,5 @@
 """Redis-based rate limiting middleware."""
 
-import time
-
 from fastapi import Request, status
 from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint

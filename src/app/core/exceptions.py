@@ -7,7 +7,6 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
-
 # ============================================
 # Base exception
 # ============================================
@@ -134,9 +133,7 @@ async def http_exception_handler(_: Request, exc: StarletteHTTPException) -> JSO
     return _error_response(code, str(exc.detail), exc.status_code)
 
 
-async def validation_exception_handler(
-    _: Request, exc: RequestValidationError
-) -> JSONResponse:
+async def validation_exception_handler(_: Request, exc: RequestValidationError) -> JSONResponse:
     """Handle Pydantic validation errors in unified format."""
     return _error_response(
         code="VALIDATION_ERROR",

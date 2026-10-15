@@ -1,10 +1,8 @@
 """Tests for authentication endpoints."""
 
 from httpx import AsyncClient
-from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models.user import User, UserRole
-
+from app.models.user import User
 
 # ============================================
 # Registration
@@ -31,9 +29,7 @@ async def test_register_success(client: AsyncClient) -> None:
     assert "password_hash" not in data
 
 
-async def test_register_duplicate_email(
-    client: AsyncClient, test_user: User
-) -> None:
+async def test_register_duplicate_email(client: AsyncClient, test_user: User) -> None:
     """Registering with an existing email returns 409."""
     response = await client.post(
         "/api/v1/auth/register",
@@ -93,9 +89,7 @@ async def test_login_success(client: AsyncClient, test_user: User) -> None:
     assert data["token_type"] == "bearer"
 
 
-async def test_login_wrong_password(
-    client: AsyncClient, test_user: User
-) -> None:
+async def test_login_wrong_password(client: AsyncClient, test_user: User) -> None:
     """Wrong password returns 401 with a generic message."""
     response = await client.post(
         "/api/v1/auth/login",
@@ -140,9 +134,7 @@ async def test_refresh_success(client: AsyncClient, test_user: User) -> None:
     assert data["refresh_token"] != refresh_token
 
 
-async def test_refresh_reuse_revoked(
-    client: AsyncClient, test_user: User
-) -> None:
+async def test_refresh_reuse_revoked(client: AsyncClient, test_user: User) -> None:
     """Using the same refresh twice fails the second time (rotation)."""
     login = await client.post(
         "/api/v1/auth/login",
@@ -163,9 +155,7 @@ async def test_refresh_reuse_revoked(
     assert second.status_code == 401
 
 
-async def test_refresh_with_access_token_fails(
-    client: AsyncClient, test_user: User
-) -> None:
+async def test_refresh_with_access_token_fails(client: AsyncClient, test_user: User) -> None:
     """Using an access token in place of a refresh token is rejected."""
     login = await client.post(
         "/api/v1/auth/login",
@@ -185,9 +175,7 @@ async def test_refresh_with_access_token_fails(
 # ============================================
 
 
-async def test_logout_revokes_refresh(
-    client: AsyncClient, test_user: User
-) -> None:
+async def test_logout_revokes_refresh(client: AsyncClient, test_user: User) -> None:
     """After logout, the refresh token can no longer be used."""
     login = await client.post(
         "/api/v1/auth/login",

@@ -67,10 +67,16 @@ select = [
 ]
 ignore = [
     "S101",  # assert — используем в тестах
+    "B008",  # Depends()/Query()/Path() в дефолтах — это стандарт FastAPI
+    "N818",  # AppException — осознанное имя, без Error-суффикса
+    "UP042", # str+Enum оставляем до планового рефакторинга
+    "S104",  # 0.0.0.0 в конфиге — binding на все интерфейсы это ок для app
+    "S105",  # "bearer"/"medbook" — это не пароли, а литералы
+    "S106",  # token_type="access" — не пароль, а тип токена
 ]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/*" = ["S101"]
+"tests/*" = ["S101", "S105", "S106"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"

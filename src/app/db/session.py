@@ -11,6 +11,7 @@ from sqlalchemy.ext.asyncio import (
 
 from app.core.config import settings
 
+
 def _create_engine(*, echo: bool) -> AsyncEngine:
     """Create an async engine with standard settings."""
     return create_async_engine(
