@@ -3,7 +3,7 @@
 import uuid
 from datetime import datetime
 
-from pydantic import BaseModel, ConfigDict, EmailStr, Field
+from pydantic import BaseModel, ConfigDict, EmailStr, Field, HttpUrl
 
 from app.schemas.specialization import SpecializationRead
 
@@ -13,6 +13,7 @@ class DoctorBase(BaseModel):
 
     bio: str | None = Field(None, description="Short biography")
     experience_years: int | None = Field(None, ge=0, le=80, description="Years of practice")
+    avatar_url: HttpUrl | None = Field(None, description="URL to the doctor's photo")
 
 
 class DoctorCreate(DoctorBase):
@@ -33,6 +34,7 @@ class DoctorUpdate(BaseModel):
     bio: str | None = None
     experience_years: int | None = Field(None, ge=0, le=80)
     specialization_id: uuid.UUID | None = None
+    avatar_url: HttpUrl | None = None
 
 
 class DoctorRead(DoctorBase):
@@ -59,3 +61,4 @@ class DoctorShort(BaseModel):
     full_name: str
     specialization: SpecializationRead
     experience_years: int | None
+    avatar_url: HttpUrl | None
