@@ -46,12 +46,17 @@ COPY --from=builder --chown=app:app /app/.venv /app/.venv
 COPY --from=builder --chown=app:app /app/src /app/src
 COPY --from=builder --chown=app:app /app/pyproject.toml /app/uv.lock /app/
 
-# Copy alembic config later, when it's created
-# COPY --chown=app:app alembic ./alembic
-# COPY --chown=app:app alembic.ini ./
+# Copy Alembic config and migrations
+COPY --chown=app:app alembic ./alembic
+COPY --chown=app:app alembic.ini ./
+
+# Copy entrypoint script
+COPY --chown=app:app docker-entrypoint.sh ./
+RUN chmod +x docker-entrypoint.sh
 
 USER app
 
+# Railway provides $PORT at runtime; default to 8000 for local docker-compose
 EXPOSE 8000
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--app-dir", "src"]
+ENTRYPOINT ["./docker-entrypoint.sh"]
