@@ -16,7 +16,7 @@ router = APIRouter(prefix="/users", tags=["users"])
 @router.get(
     "/me",
     response_model=UserRead,
-    summary="Get current user",
+    summary="Текущий пользователь",
     description="Вернуть профиль текущего авторизованного пользователя.",
 )
 async def get_me(user: CurrentUser) -> UserRead:
@@ -27,7 +27,7 @@ async def get_me(user: CurrentUser) -> UserRead:
 @router.patch(
     "/me",
     response_model=UserRead,
-    summary="Update current user",
+    summary="Обновить профиль",
     description="Обновить профиль текущего пользователя (только поле full_name).",
 )
 async def update_me(

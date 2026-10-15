@@ -39,7 +39,7 @@ ServiceDep = Annotated[SlotService, Depends(get_service)]
 @router.get(
     "/doctors/{doctor_id}/slots",
     response_model=Page[SlotRead],
-    summary="List doctor slots",
+    summary="Слоты врача",
     description="Публичный список слотов врача с фильтром по датам и пагинацией.",
 )
 async def list_slots(
@@ -77,7 +77,7 @@ async def list_slots(
     "/doctors/{doctor_id}/slots",
     response_model=SlotRead,
     status_code=status.HTTP_201_CREATED,
-    summary="Create slot",
+    summary="Создать слот",
     description="Создать один слот вручную. Доступно врачу (для себя) или администратору.",
 )
 async def create_slot(
@@ -99,7 +99,7 @@ async def create_slot(
 @router.post(
     "/doctors/{doctor_id}/slots/generate",
     response_model=SlotGenerateResponse,
-    summary="Generate slots",
+    summary="Сгенерировать слоты",
     description=(
         "Массовая генерация слотов на диапазон дат. "
         "Существующие и пересекающиеся слоты пропускаются. "
@@ -125,7 +125,7 @@ async def generate_slots(
 @router.delete(
     "/slots/{slot_id}",
     status_code=status.HTTP_204_NO_CONTENT,
-    summary="Delete slot",
+    summary="Удалить слот",
     description="Удалить незанятый слот. Доступно врачу (свой) или администратору.",
 )
 async def delete_slot(

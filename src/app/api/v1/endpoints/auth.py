@@ -19,7 +19,7 @@ router = APIRouter(prefix="/auth", tags=["auth"])
     "/register",
     response_model=UserRead,
     status_code=status.HTTP_201_CREATED,
-    summary="Register a new patient",
+    summary="Регистрация пациента",
     description="Создать нового пользователя с ролью «пациент».",
 )
 async def register(data: RegisterRequest, service: AuthServiceDep) -> UserRead:
@@ -31,7 +31,7 @@ async def register(data: RegisterRequest, service: AuthServiceDep) -> UserRead:
 @router.post(
     "/login",
     response_model=TokenPair,
-    summary="Login",
+    summary="Вход в систему",
     description="Аутентификация по email и паролю. Возвращает пару access и refresh токенов.",
 )
 async def login(data: LoginRequest, service: AuthServiceDep) -> TokenPair:
@@ -42,7 +42,7 @@ async def login(data: LoginRequest, service: AuthServiceDep) -> TokenPair:
 @router.post(
     "/refresh",
     response_model=TokenPair,
-    summary="Refresh tokens",
+    summary="Обновление токенов",
     description="Обменять действующий refresh-токен на новую пару токенов (с ротацией).",
 )
 async def refresh(data: RefreshRequest, service: AuthServiceDep) -> TokenPair:
@@ -53,7 +53,7 @@ async def refresh(data: RefreshRequest, service: AuthServiceDep) -> TokenPair:
 @router.post(
     "/logout",
     status_code=status.HTTP_204_NO_CONTENT,
-    summary="Logout",
+    summary="Выход из системы",
     description="Отозвать refresh-токен. После этого его нельзя использовать.",
 )
 async def logout(data: LogoutRequest, service: AuthServiceDep) -> None:
