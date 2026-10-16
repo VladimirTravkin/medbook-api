@@ -1,0 +1,24 @@
+# ============================================
+# Normalize line endings
+# ============================================
+# By default, Git converts LF -> CRLF on checkout on Windows.
+# That breaks shell scripts inside Linux Docker containers.
+# This file forces LF for shell scripts regardless of the host OS.
+
+* text=auto eol=lf
+
+# Shell scripts MUST use LF (they run inside Linux containers)
+*.sh text eol=lf
+docker-entrypoint.sh text eol=lf
+
+# Windows-specific files keep CRLF
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Binary files should not be touched
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
