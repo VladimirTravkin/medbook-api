@@ -135,12 +135,11 @@ class SlotService:
                     skipped += 1
                     continue
 
-                # Skip break
+                # Skip break (not counted as "skipped" — it is not a slot at all)
                 if data.break_start and data.break_end:
                     break_start_dt = datetime.combine(current_date, data.break_start, tzinfo=UTC)
                     break_end_dt = datetime.combine(current_date, data.break_end, tzinfo=UTC)
                     if slot_start < break_end_dt and slot_end > break_start_dt:
-                        skipped += 1
                         continue
 
                 # Skip if a slot with this start already exists
