@@ -267,3 +267,36 @@ async def test_delete_booked_slot_forbidden(
     )
     assert response.status_code == 409
     assert response.json()["error"]["code"] == "CONFLICT"
+
+
+async def test_generate_slots_break_not_counted(
+    client: AsyncClient,
+    doctor_headers: dict[str, str],
+    test_doctor: Doctor,
+) -> None:
+    """Break time must not be counted in `skipped` — it is not a slot."""
+    today = datetime.now(UTC).date()
+    days_ahead = 7 - today.weekday()
+    next_monday = today + timedelta(days=days_ahead)
+
+    response = await client.post(
+        f"/api/v1/doctors/{test_doctor.id}/slots/generate",
+        headers=doctor_headers,
+        json={
+            "date_from": f"{next_monday.isoformat()}T00:00:00+00:00",
+            "date_to": f"{next_monday.isoformat()}T23:59:59+00:00",
+            "work_day_start": "09:00:00",
+            "work_day_end": "11:00:00",
+            "slot_duration_minutes": 30,
+            # Break in the middle: 10:00-10:30
+            "break_start": "10:00:00",
+            "break_end": "10:30:00",
+            "weekdays": [1],  # Monday only
+        },
+    )
+    assert response.status_code == 200
+    data = response.json()
+    # Slots: 09:00-09:30, 09:30-10:00, 10:30-11:00 = 3 slots.
+    # Break 10:00-10:30 is skipped silently, not counted anywhere.
+    assert data["created"] == 3
+    assert data["skipped"] == 0
