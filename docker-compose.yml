@@ -7,8 +7,6 @@ services:
       POSTGRES_USER: ${POSTGRES_USER:-medbook}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-medbook}
       POSTGRES_DB: ${POSTGRES_DB:-medbook}
-    ports:
-      - "${POSTGRES_PORT:-5432}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -21,8 +19,6 @@ services:
     image: redis:7-alpine
     container_name: medbook-redis
     restart: unless-stopped
-    ports:
-      - "${REDIS_PORT:-6379}:6379"
     volumes:
       - redis_data:/data
     healthcheck:
