@@ -1,0 +1,19 @@
+# Development overrides.
+#
+# This file is automatically merged with docker-compose.yml
+# by Docker Compose when running locally.
+#
+# It exposes PostgreSQL and Redis ports to the host machine
+# so that you can connect from DBeaver, psql, redis-cli, etc.
+#
+# In production this file is ignored (or absent),
+# keeping the database and cache unreachable from the outside.
+
+services:
+  postgres:
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+
+  redis:
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
