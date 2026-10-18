@@ -41,6 +41,7 @@ class Settings(BaseSettings):
     REDIS_HOST: str = "localhost"
     REDIS_PORT: int = 6379
     REDIS_DB: int = 0
+    REDIS_PASSWORD: str | None = None
 
     # === Cache ===
     CACHE_TTL_DOCTORS: int = 300
@@ -71,6 +72,9 @@ class Settings(BaseSettings):
     @property
     def redis_url(self) -> str:
         """Build Redis connection URL from parts."""
+        if self.REDIS_PASSWORD:
+            # Use rediss:// (SSL) when password is provided (e.g., Upstash)
+            return f"rediss://:{self.REDIS_PASSWORD}@{self.REDIS_HOST}:{self.REDIS_PORT}/{self.REDIS_DB}"
         return f"redis://{self.REDIS_HOST}:{self.REDIS_PORT}/{self.REDIS_DB}"
 
     @property
