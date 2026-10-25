@@ -21,6 +21,11 @@ Built with FastAPI, this API provides secure JWT authentication (with refresh to
 - **Email:** `demo@example.com`
 - **Password:** `demopassword123`
 
+**How to authorize in Swagger:**
+1. Open `POST /api/v1/auth/login`, click **Try it out**, paste the email and password, click **Execute**.
+2. Copy the `access_token` value from the response.
+3. Click **Authorize** (top of the page), paste the token into the **Value** field, click **Authorize**.
+
 *(Note: The API is hosted on Render's free tier. The first request may take up to 50 seconds to spin up the instance.)*
 
 ---
