@@ -30,20 +30,20 @@ Production-ready REST API для записи на прием в клинику.
 ### Анимированная демонстрация
 
 **Поток авторизации:**
-![Login Demo](docs/demo-login.gif)
+![Login Demo](docs/images/demo-login.gif)
 
 **Поток записи на прием:**
-![Booking Demo](docs/demo-booking.gif)
+![Booking Demo](docs/images/demo-booking.gif)
 
 ### Скриншоты
 
 | Обзор Swagger | Успешный вход |
 |---|---|
-| ![Swagger](docs/01-swagger-overview.png) | ![Login](docs/02-login-success-a.png) |
+| ![Swagger](docs/images/01-swagger-overview.png) | ![Login](docs/images/02-login-success-a.png) |
 
 | Обработка ошибок (409 Conflict) | Тесты (70+) |
 |---|---|
-| ![Error](docs/03-register-conflict-b.png) | ![Tests](docs/04-tests-passing-b.png) |
+| ![Error](docs/images/03-register-conflict-b.png) | ![Tests](docs/images/04-tests-passing-b.png) |
 
 ---
 
