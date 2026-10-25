@@ -30,20 +30,20 @@ Built with FastAPI, this API provides secure JWT authentication (with refresh to
 ### Animated walkthrough
 
 **Authentication flow:**
-![Login Demo](docs/demo-login.gif)
+![Login Demo](docs/images/demo-login.gif)
 
 **Booking flow:**
-![Booking Demo](docs/demo-booking.gif)
+![Booking Demo](docs/images/demo-booking.gif)
 
 ### Screenshots
 
 | Swagger Overview | Successful Login |
 |---|---|
-| ![Swagger](docs/01-swagger-overview.png) | ![Login](docs/02-login-success-a.png) |
+| ![Swagger](docs/images/01-swagger-overview.png) | ![Login](docs/images/02-login-success-a.png) |
 
 | Error Handling (409 Conflict) | Test Suite (70+ tests) |
 |---|---|
-| ![Error](docs/03-register-conflict-b.png) | ![Tests](docs/04-tests-passing-b.png) |
+| ![Error](docs/images/03-register-conflict-b.png) | ![Tests](docs/images/04-tests-passing-b.png) |
 
 ---
 
