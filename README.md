@@ -1,6 +1,6 @@
 # MedBook API
 
-[🇷🇺 Русская версия](README.ru.md) · 🇬🇧 English
+**English** | [Русский](README.ru.md)
 
 [![CI](https://github.com/VladimirTravkin/medbook-api/actions/workflows/ci.yml/badge.svg)](https://github.com/VladimirTravkin/medbook-api/actions/workflows/ci.yml)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/downloads/)
@@ -131,6 +131,20 @@ uv run uvicorn app.main:app --reload --app-dir src
 ```
 
 Open `http://localhost:8000/docs` for the interactive Swagger UI.
+
+**Optional — populate demo data:**
+
+The database starts empty. To create demo specializations, doctors and schedule slots, run:
+
+```bash
+uv run python scripts/seed.py
+```
+
+The script is idempotent — safe to run multiple times. It creates:
+
+- 3 specializations (Therapist, Cardiologist, Neurologist)
+- 3 doctors with bios and avatars (password for all: `doctor12345`)
+- 480 schedule slots (2 weeks ahead, weekdays only, 9:00–18:00, 30-minute sessions)
 
 ---
 
