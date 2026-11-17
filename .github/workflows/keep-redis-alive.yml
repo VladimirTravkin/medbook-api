@@ -1,0 +1,15 @@
+name: Keep Redis Alive
+on:
+  schedule:
+    - cron: '0 0 * * *' # Запускать раз в день в 00:00 UTC
+  workflow_dispatch: # Позволяет запустить вручную для проверки
+
+jobs:
+  ping-redis:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Upstash Redis
+        run: |
+          curl -s -X POST "${{ secrets.UPSTASH_REDIS_REST_URL }}" \
+            -H "Authorization: Bearer ${{ secrets.UPSTASH_REDIS_REST_TOKEN }}" \
+            -d '["PING"]'
